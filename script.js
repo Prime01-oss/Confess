@@ -6,7 +6,7 @@ const state = {
     mouseVel: 0
 };
 
-// --- 1. STARTUP LOGIC (Button -> Audio -> Loading) ---
+// --- 1. STARTUP LOGIC ---
 const loaderBar = document.querySelector('.loader-bar-fill');
 const preloader = document.getElementById('preloader');
 const loaderUI = document.getElementById('loader-ui');
@@ -18,9 +18,8 @@ btnEnter.addEventListener('click', () => {
     // 1. Play Piano Immediately
     audioPiano.volume = 0; 
     audioPiano.play().then(() => {
-        // Fade piano in gracefully
         gsap.to(audioPiano, { volume: 0.5, duration: 3 });
-    });
+    }).catch(e => console.log("Audio error:", e));
 
     // 2. Transition to Loading
     gsap.to(startUI, { opacity: 0, duration: 0.5, onComplete: () => {
@@ -52,22 +51,32 @@ function revealSite() {
       .from(".subtitle", { opacity: 0, letterSpacing: "1em", duration: 1.5 }, "-=1");
 }
 
-// --- 2. LANTERN PHYSICS ---
+// --- 2. LANTERN PHYSICS (MOUSE + TOUCH) ---
 const lantern = document.getElementById('lantern-container');
 const lanternHalo = document.querySelector('.lantern-halo');
 const vignette = document.getElementById('vignette-layer');
 
-document.addEventListener('mousemove', (e) => {
-    const dx = e.clientX - state.mouseX;
-    const dy = e.clientY - state.mouseY;
+function updateLantern(x, y) {
+    const dx = x - state.mouseX;
+    const dy = y - state.mouseY;
     state.mouseVel = Math.sqrt(dx*dx + dy*dy);
     
-    state.mouseX = e.clientX;
-    state.mouseY = e.clientY;
+    state.mouseX = x;
+    state.mouseY = y;
 
-    gsap.to(lantern, { x: state.mouseX, y: state.mouseY, duration: 0.6, ease: "power3.out" });
-    gsap.to(vignette, { x: -state.mouseX * 0.03, y: -state.mouseY * 0.03, duration: 1 });
+    gsap.to(lantern, { x: x, y: y, duration: 0.6, ease: "power3.out" });
+    gsap.to(vignette, { x: -x * 0.03, y: -y * 0.03, duration: 1 });
+}
+
+document.addEventListener('mousemove', (e) => {
+    updateLantern(e.clientX, e.clientY);
 });
+
+document.addEventListener('touchmove', (e) => {
+    const touch = e.touches[0];
+    updateLantern(touch.clientX, touch.clientY);
+}, { passive: true });
+
 
 // --- 3. EMBER SYSTEM ---
 const cvs = document.getElementById('ember-canvas');
@@ -169,14 +178,12 @@ const lenis = new Lenis({ duration: 1.5, smooth: true });
 function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
 requestAnimationFrame(raf);
 
-// --- 8. DUAL ENDING LOGIC (Piano Only) ---
+// --- 8. ENDING LOGIC ---
 function endStory(message, isHappyEnd) {
     if(isHappyEnd) {
-        // Happy: Swell piano
         if(audioPiano.paused) audioPiano.play();
         gsap.to(audioPiano, { volume: 1.0, duration: 3 });
     } else {
-        // Polite: Fade out piano
         gsap.to(audioPiano, { volume: 0, duration: 2 });
     }
     const outroText = document.querySelector('.outro-text');

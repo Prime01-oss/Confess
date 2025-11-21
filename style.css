@@ -18,8 +18,9 @@ body {
     color: var(--paper);
     font-family: var(--font-body);
     overflow: hidden; 
-    cursor: none; 
+    cursor: none; /* Custom cursor active */
     -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
 }
 
 /* --- 2. FX LAYERS --- */
@@ -36,32 +37,36 @@ body {
     z-index: 90; pointer-events: none;
 }
 
-/* --- 3. TYPOGRAPHY SAFETY --- */
-h1, h2, p { margin: 0; overflow-wrap: break-word; word-wrap: break-word; hyphens: none; }
+/* --- 3. FLUID TYPOGRAPHY --- */
+h1, h2, p { margin: 0; overflow-wrap: break-word; hyphens: none; }
 
 h1 {
     font-family: var(--font-display); 
-    font-size: clamp(3rem, 10vw, 8rem);
+    font-size: clamp(3.5rem, 12vw, 9rem); 
     line-height: 1.1; color: var(--paper);
     text-shadow: 0 4px 20px rgba(0,0,0,0.8);
 }
 
 .subtitle {
-    font-family: var(--font-display); font-size: 1rem;
+    font-family: var(--font-display); 
+    font-size: clamp(0.8rem, 2vw, 1.2rem);
     color: var(--gold); letter-spacing: 0.4em; margin-bottom: 1rem;
     text-transform: uppercase; opacity: 0.8;
 }
 
 /* --- 4. SECTIONS --- */
 section {
-    min-height: 100vh; display: flex; flex-direction: column;
+    min-height: 100vh; 
+    display: flex; flex-direction: column;
     justify-content: center; align-items: center; text-align: center;
     padding: 2rem; position: relative; z-index: 200;
 }
 
 .text-reveal {
-    font-size: clamp(1.5rem, 3vw, 2.5rem); 
-    font-weight: 300; line-height: 1.6; max-width: 800px;
+    font-size: clamp(1.5rem, 4vw, 2.5rem); 
+    font-weight: 300; line-height: 1.6; 
+    max-width: 90%; width: 800px; 
+    margin-bottom: 1rem;
 }
 
 .char { display: inline-block; white-space: pre; opacity: 0; will-change: opacity, transform; }
@@ -69,28 +74,38 @@ section {
 .gold-text { color: var(--gold); font-style: italic; text-shadow: 0 0 15px rgba(212,175,55,0.5); }
 .handwritten {
     display: block; margin-top: 40px;
-    font-family: var(--font-hand); font-size: 1.8em; color: var(--gold);
+    font-family: var(--font-hand); 
+    font-size: clamp(1.8em, 5vw, 2.5em); 
+    color: var(--gold); line-height: 1.2;
 }
 
 /* --- 5. CONFESSION --- */
 .confession-title {
     font-family: var(--font-display);
-    font-size: clamp(3rem, 6vw, 6rem);
+    font-size: clamp(2.5rem, 8vw, 6rem);
     color: var(--paper); 
     text-shadow: 0 0 30px rgba(212,175,55,0.2);
     margin-bottom: 20px;
 }
 .confession-sub {
-    font-family: var(--font-hand); font-size: 2rem; color: var(--gold); margin-bottom: 60px;
+    font-family: var(--font-hand); 
+    font-size: clamp(1.5rem, 4vw, 2rem); 
+    color: var(--gold); margin-bottom: 60px;
 }
 
-/* --- 6. MAGNETIC BUTTONS --- */
-.btn-group { display: flex; gap: 30px; flex-wrap: wrap; justify-content: center; }
+/* --- 6. RESPONSIVE BUTTONS --- */
+.btn-group { 
+    display: flex; gap: 30px; flex-wrap: wrap; 
+    justify-content: center; width: 100%;
+}
+
 .mag-btn {
     position: relative; padding: 20px 50px; background: none;
     border: 1px solid rgba(212,175,55,0.3); border-radius: 100px;
     cursor: pointer; overflow: hidden; transition: border-color 0.3s;
+    min-width: 250px; 
 }
+
 .btn-txt {
     position: relative; z-index: 2; font-family: var(--font-display);
     font-size: 0.9rem; letter-spacing: 0.15em; color: var(--paper);
@@ -108,13 +123,13 @@ section {
 .secondary .btn-txt { color: #888; }
 .secondary:hover .btn-txt { color: var(--paper); }
 
-/* --- 7. LANTERN CURSOR & FAIRY FLARES --- */
+/* --- 7. LANTERN SYSTEM --- */
 #lantern-container {
     position: fixed; top: 0; left: 0; pointer-events: none; z-index: 100;
     transform: translate(-50%, -50%);
 }
 .lantern-halo {
-    width: 600px; height: 600px;
+    width: clamp(300px, 50vw, 600px); height: clamp(300px, 50vw, 600px);
     background: radial-gradient(circle, rgba(255,150,50,0.12) 0%, rgba(100,50,0,0.02) 40%, transparent 70%);
     border-radius: 50%; mix-blend-mode: screen;
     transition: width 0.5s, height 0.5s, background 0.5s;
@@ -131,8 +146,6 @@ section {
     width: 4px; height: 4px; background: #fff; border-radius: 50%;
     box-shadow: 0 0 10px var(--gold), 0 0 20px var(--ember);
 }
-
-/* FAIRY FLARES */
 .lantern-flares {
     position: absolute; top: 50%; left: 50%; width: 100px; height: 100px;
     transform: translate(-50%, -50%); pointer-events: none;
@@ -149,53 +162,62 @@ section {
 .f3 { top: 30%; left: 80%; animation-delay: 1s; }
 .f4 { top: 70%; left: 70%; animation-delay: 1.5s; }
 
-@keyframes floatFlare {
+@keyframes floatFlare { 
     0% { transform: translate(0, 0) scale(1); opacity: 0.7; }
-    100% { transform: translate(10px, -15px) scale(0.8); opacity: 0.3; }
+    100% { transform: translate(10px, -15px) scale(0.8); opacity: 0.3; } 
+}
+@keyframes flicker { 
+    0% { opacity: 1; transform: scale(1); } 
+    50% { opacity: 0.9; transform: scale(1.02); } 
+    100% { opacity: 1; transform: scale(0.98); } 
 }
 
-@keyframes flicker {
-    0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.9; transform: scale(1.02); } 100% { opacity: 1; transform: scale(0.98); }
-}
-
-/* --- 8. PRELOADER & FLOATING BUTTON --- */
+/* --- 8. START UI & FLOATING BUTTON --- */
 #preloader { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; }
-
-.loader-content { text-align: center; width: 200px; transition: opacity 0.5s; }
-.loader-text { color: var(--gold); font-family: var(--font-display); font-size: 0.8rem; letter-spacing: 0.2em; margin-bottom: 10px; text-transform: uppercase; }
+.loader-content { text-align: center; width: 80%; max-width: 300px; transition: opacity 0.5s; }
+.loader-text { color: var(--gold); font-family: var(--font-display); font-size: 0.9rem; letter-spacing: 0.2em; margin-bottom: 15px; text-transform: uppercase; }
 .loader-bar-bg { width: 100%; height: 1px; background: rgba(212,175,55,0.2); }
 .loader-bar-fill { width: 0%; height: 100%; background: var(--gold); }
 
-/* Floating Button Styles */
+/* Floating Button */
 .start-content { text-align: center; }
 .enter-btn {
-    position: relative;
-    background: transparent;
-    border: 1px solid var(--gold);
-    color: var(--gold);
-    font-family: var(--font-display);
-    font-size: 1.2rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    padding: 20px 50px;
-    cursor: pointer;
-    overflow: hidden;
+    position: relative; background: transparent;
+    border: 1px solid var(--gold); color: var(--gold);
+    font-family: var(--font-display); font-size: clamp(1rem, 3vw, 1.2rem);
+    letter-spacing: 0.2em; text-transform: uppercase;
+    padding: 20px 50px; cursor: pointer; overflow: hidden;
     animation: floatBtn 4s ease-in-out infinite;
     box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
     transition: all 0.4s ease;
 }
+.enter-btn::after {
+    content: ''; position: absolute; top: 50%; left: 50%;
+    width: 300%; height: 300%;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.2) 0%, transparent 60%);
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.6s ease; z-index: -1;
+}
 .enter-btn:hover {
-    border-color: #fff;
-    color: #fff;
+    border-color: #fff; color: #fff;
     box-shadow: 0 0 40px rgba(212, 175, 55, 0.6);
     text-shadow: 0 0 10px rgba(255,255,255,0.8);
 }
-@keyframes floatBtn {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+.enter-btn:hover::after { transform: translate(-50%, -50%) scale(1); }
+
+@keyframes floatBtn { 
+    0%, 100% { transform: translateY(0); } 
+    50% { transform: translateY(-10px); } 
 }
 
 /* --- 9. OUTRO --- */
 #outro { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; }
-.outro-text { font-family: var(--font-hand); font-size: 3rem; color: var(--gold); text-align: center; }
+.outro-text { font-family: var(--font-hand); font-size: clamp(2rem, 8vw, 4rem); color: var(--gold); text-align: center; padding: 20px; }
 .spacer { height: 20vh; }
+
+/* --- 10. MOBILE ADJUSTMENTS --- */
+@media (max-width: 768px) {
+    .btn-group { flex-direction: column; align-items: center; gap: 20px; }
+    .mag-btn { width: 100%; max-width: 300px; }
+    section { min-height: 100svh; }
+}

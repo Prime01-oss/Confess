@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CRITICAL: Viewport setting for true mobile responsiveness -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>The Manuscript</title>
     
     <!-- FONTS -->
@@ -14,7 +15,7 @@
 </head>
 <body>
 
-    <!-- AUDIO ENGINE: PIANO ONLY -->
+    <!-- AUDIO ENGINE: Piano Only -->
     <audio id="bgm-piano" loop><source src="piano.mp3" type="audio/mpeg"></audio>
 
     <!-- PRELOADER SYSTEM -->
@@ -23,7 +24,8 @@
         <!-- PHASE 1: The Floating Start Button -->
         <div class="start-content" id="start-ui">
             <button id="btn-enter" class="enter-btn">
-                Light the Lantern
+                <span class="btn-text-inner">Light the Lantern</span>
+                <div class="btn-glow"></div>
             </button>
         </div>
 
