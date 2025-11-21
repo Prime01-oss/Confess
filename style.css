@@ -1,0 +1,171 @@
+/* --- 1. CORE SETTINGS --- */
+:root {
+    --bg: #030202;
+    --paper: #e8e4d9;
+    --gold: #d4af37;
+    --ember: #ff5500;
+    --dark-red: #4a0505;
+    --font-display: 'Cinzel', serif;
+    --font-body: 'Cormorant Garamond', serif;
+    --font-hand: 'Pinyon Script', cursive;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+    margin: 0; padding: 0;
+    background-color: var(--bg);
+    color: var(--paper);
+    font-family: var(--font-body);
+    overflow: hidden; 
+    cursor: none; 
+    -webkit-font-smoothing: antialiased;
+}
+
+/* --- 2. FX LAYERS --- */
+#noise-canvas, #ember-canvas {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+}
+#noise-canvas { z-index: 80; opacity: 0.06; mix-blend-mode: overlay; }
+#ember-canvas { z-index: 81; mix-blend-mode: screen; }
+
+.vignette {
+    position: fixed; top: -10%; left: -10%; width: 120%; height: 120%;
+    background: radial-gradient(circle, transparent 40%, #000 100%);
+    z-index: 90; pointer-events: none;
+}
+
+/* --- 3. TYPOGRAPHY SAFETY --- */
+h1, h2, p { margin: 0; overflow-wrap: break-word; word-wrap: break-word; hyphens: none; }
+
+h1 {
+    font-family: var(--font-display); 
+    font-size: clamp(3rem, 10vw, 8rem);
+    line-height: 1.1; color: var(--paper);
+    text-shadow: 0 4px 20px rgba(0,0,0,0.8);
+}
+
+.subtitle {
+    font-family: var(--font-display); font-size: 1rem;
+    color: var(--gold); letter-spacing: 0.4em; margin-bottom: 1rem;
+    text-transform: uppercase; opacity: 0.8;
+}
+
+/* --- 4. SECTIONS --- */
+section {
+    min-height: 100vh; display: flex; flex-direction: column;
+    justify-content: center; align-items: center; text-align: center;
+    padding: 2rem; position: relative; z-index: 200;
+}
+
+.text-reveal {
+    font-size: clamp(1.5rem, 3vw, 2.5rem); 
+    font-weight: 300; line-height: 1.6; max-width: 800px;
+}
+
+.char { display: inline-block; white-space: pre; opacity: 0; will-change: opacity, transform; }
+
+.gold-text { color: var(--gold); font-style: italic; text-shadow: 0 0 15px rgba(212,175,55,0.5); }
+.handwritten {
+    display: block; margin-top: 40px;
+    font-family: var(--font-hand); font-size: 1.8em; color: var(--gold);
+}
+
+/* --- 5. CONFESSION --- */
+.confession-title {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 6vw, 6rem);
+    color: var(--paper); 
+    text-shadow: 0 0 30px rgba(212,175,55,0.2);
+    margin-bottom: 20px;
+}
+.confession-sub {
+    font-family: var(--font-hand); font-size: 2rem; color: var(--gold); margin-bottom: 60px;
+}
+
+/* --- 6. MAGNETIC BUTTONS --- */
+.btn-group { display: flex; gap: 30px; flex-wrap: wrap; justify-content: center; }
+.mag-btn {
+    position: relative; padding: 20px 50px; background: none;
+    border: 1px solid rgba(212,175,55,0.3); border-radius: 100px;
+    cursor: pointer; overflow: hidden; transition: border-color 0.3s;
+}
+.btn-txt {
+    position: relative; z-index: 2; font-family: var(--font-display);
+    font-size: 0.9rem; letter-spacing: 0.15em; color: var(--paper);
+    transition: color 0.3s; pointer-events: none; text-transform: uppercase;
+}
+.btn-blind {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--gold); transform: translateY(100%);
+    transition: transform 0.5s cubic-bezier(0.7, 0, 0.3, 1); z-index: 1;
+}
+.mag-btn:hover { border-color: var(--gold); }
+.mag-btn:hover .btn-blind { transform: translateY(0%); }
+.mag-btn:hover .btn-txt { color: #000; }
+.secondary { border-color: rgba(255,255,255,0.1); }
+.secondary .btn-txt { color: #888; }
+.secondary:hover .btn-txt { color: var(--paper); }
+
+/* --- 7. LANTERN CURSOR & FAIRY FLARES --- */
+#lantern-container {
+    position: fixed; top: 0; left: 0; pointer-events: none; z-index: 100;
+    transform: translate(-50%, -50%);
+}
+.lantern-halo {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(255,150,50,0.12) 0%, rgba(100,50,0,0.02) 40%, transparent 70%);
+    border-radius: 50%; mix-blend-mode: screen;
+    transition: width 0.5s, height 0.5s, background 0.5s;
+    animation: flicker 4s infinite alternate;
+}
+.lantern-core {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 80px; height: 80px;
+    background: radial-gradient(circle, rgba(255,200,100,0.3) 0%, transparent 70%);
+    border-radius: 50%; mix-blend-mode: screen;
+}
+.lantern-spark {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 4px; height: 4px; background: #fff; border-radius: 50%;
+    box-shadow: 0 0 10px var(--gold), 0 0 20px var(--ember);
+}
+
+/* FAIRY FLARES */
+.lantern-flares {
+    position: absolute; top: 50%; left: 50%; width: 100px; height: 100px;
+    transform: translate(-50%, -50%); pointer-events: none;
+}
+.flare {
+    position: absolute; width: 4px; height: 4px;
+    background: var(--gold); border-radius: 50%;
+    box-shadow: 0 0 10px var(--gold), 0 0 20px var(--ember);
+    opacity: 0.7; mix-blend-mode: screen;
+    animation: floatFlare 3s infinite ease-in-out alternate;
+}
+.f1 { top: 20%; left: 20%; animation-delay: 0s; }
+.f2 { top: 80%; left: 30%; animation-delay: 0.5s; }
+.f3 { top: 30%; left: 80%; animation-delay: 1s; }
+.f4 { top: 70%; left: 70%; animation-delay: 1.5s; }
+
+@keyframes floatFlare {
+    0% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+    100% { transform: translate(10px, -15px) scale(0.8); opacity: 0.3; }
+}
+
+@keyframes flicker {
+    0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.9; transform: scale(1.02); } 100% { opacity: 1; transform: scale(0.98); }
+}
+
+/* --- 8. PRELOADER --- */
+#preloader { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; }
+.loader-content { text-align: center; width: 200px; }
+.loader-text { color: var(--gold); font-family: var(--font-display); font-size: 0.8rem; letter-spacing: 0.2em; margin-bottom: 10px; text-transform: uppercase; }
+.loader-bar-bg { width: 100%; height: 1px; background: rgba(212,175,55,0.2); }
+.loader-bar-fill { width: 0%; height: 100%; background: var(--gold); }
+
+/* --- 9. OUTRO --- */
+#outro { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; }
+.outro-text { font-family: var(--font-hand); font-size: 3rem; color: var(--gold); text-align: center; }
+.spacer { height: 20vh; }
