@@ -1,45 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Manuscript</title>
-
+    
+    <!-- FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Pinyon+Script&display=swap"
-        rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Pinyon+Script&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-    <audio id="sfx-rain" loop>
-        <source src="rain.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="sfx-fire" loop>
-        <source src="fire.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="bgm-piano" loop>
-        <source src="piano.mp3" type="audio/mpeg">
-    </audio>
+    <!-- AUDIO ENGINE: PIANO ONLY -->
+    <audio id="bgm-piano" loop><source src="piano.mp3" type="audio/mpeg"></audio>
 
+    <!-- PRELOADER SYSTEM -->
     <div id="preloader">
-        <div class="loader-content">
-            <div class="loader-text">Ignighting Lantern!...</div>
-            <div class="loader-bar-bg">
-                <div class="loader-bar-fill"></div>
-            </div>
+        
+        <!-- PHASE 1: The Floating Start Button -->
+        <div class="start-content" id="start-ui">
+            <button id="btn-enter" class="enter-btn">
+                Light the Lantern
+            </button>
         </div>
+
+        <!-- PHASE 2: The Loading Bar (Hidden Initially) -->
+        <div class="loader-content" id="loader-ui" style="display: none; opacity: 0;">
+            <div class="loader-text">Igniting Lantern...</div>
+            <div class="loader-bar-bg"><div class="loader-bar-fill"></div></div>
+        </div>
+
     </div>
 
+    <!-- FX LAYERS -->
     <canvas id="ember-canvas"></canvas>
     <canvas id="noise-canvas"></canvas>
     <div class="vignette" id="vignette-layer"></div>
-
+    
+    <!-- LANTERN CURSOR WITH FAIRY FLARES -->
     <div id="lantern-container">
         <div class="lantern-halo"></div>
         <div class="lantern-flares">
@@ -52,27 +53,29 @@
         <div class="lantern-spark"></div>
     </div>
 
+    <!-- SCROLL CONTENT -->
     <div id="smooth-wrapper">
         <div id="smooth-content">
 
+            <!-- SCENE 1: HERO -->
             <section class="hero">
                 <div class="hero-inner parallax-target" data-speed="0.05">
                     <p class="subtitle">The Prologue</p>
                     <h1 class="title-split">Words Unspoken</h1>
                 </div>
                 <div class="scroll-hint">
-                    <span class="hint-text">Illuminate...</span>
+                    <span class="hint-text">Illuminate</span>
                     <div class="hint-line"></div>
                 </div>
             </section>
 
+            <!-- SCENE 2: NARRATIVE -->
             <section class="prose-section">
                 <p class="text-reveal">I've spent a lifetime searching for logic in the chaos.</p>
-                
             </section>
             <section class="prose-section">
                 <p class="text-reveal">Solving problems.</p>
-                <p class="text-reveal">Predicting outcomes. </p>
+                <p class="text-reveal">Predicting outcomes.</p>
                 <p class="text-reveal">Avoiding errors.</p>
             </section>
             <section class="prose-section">
@@ -84,6 +87,7 @@
                 <p class="text-reveal"><span class="handwritten">The only variable I cannot define.</span></p>
             </section>
 
+            <!-- SCENE 3: CONCLUSION -->
             <section class="confession-section" id="confession">
                 <div class="pulse-circle"></div>
                 <h2 class="confession-title">The Conclusion?</h2>
@@ -104,16 +108,17 @@
         </div>
     </div>
 
+    <!-- FINAL OVERLAY -->
     <div id="outro">
         <div class="outro-content">
             <p class="outro-text">...</p>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script> 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="script.js"></script>
 </body>
-
 </html>

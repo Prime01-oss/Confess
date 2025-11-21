@@ -158,12 +158,42 @@ section {
     0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.9; transform: scale(1.02); } 100% { opacity: 1; transform: scale(0.98); }
 }
 
-/* --- 8. PRELOADER --- */
+/* --- 8. PRELOADER & FLOATING BUTTON --- */
 #preloader { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; }
-.loader-content { text-align: center; width: 200px; }
+
+.loader-content { text-align: center; width: 200px; transition: opacity 0.5s; }
 .loader-text { color: var(--gold); font-family: var(--font-display); font-size: 0.8rem; letter-spacing: 0.2em; margin-bottom: 10px; text-transform: uppercase; }
 .loader-bar-bg { width: 100%; height: 1px; background: rgba(212,175,55,0.2); }
 .loader-bar-fill { width: 0%; height: 100%; background: var(--gold); }
+
+/* Floating Button Styles */
+.start-content { text-align: center; }
+.enter-btn {
+    position: relative;
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 20px 50px;
+    cursor: pointer;
+    overflow: hidden;
+    animation: floatBtn 4s ease-in-out infinite;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
+    transition: all 0.4s ease;
+}
+.enter-btn:hover {
+    border-color: #fff;
+    color: #fff;
+    box-shadow: 0 0 40px rgba(212, 175, 55, 0.6);
+    text-shadow: 0 0 10px rgba(255,255,255,0.8);
+}
+@keyframes floatBtn {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
 
 /* --- 9. OUTRO --- */
 #outro { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; }
