@@ -10,86 +10,94 @@ const state = {
     tilt: 0
 };
 
-// --- 1. STARTUP LOGIC ---
-const loaderBar = document.querySelector('.loader-bar-fill');
+// --- DOM ELEMENTS ---
 const preloader = document.getElementById('preloader');
 const loaderUI = document.getElementById('loader-ui');
 const startUI = document.getElementById('start-ui');
 const btnEnter = document.getElementById('btn-enter');
 const audioPiano = document.getElementById('bgm-piano');
+const btnLantern = document.getElementById('btn-lantern-core');
+const loadLanterns = document.querySelectorAll('.load-lantern');
 
+// --- 1. STARTUP LOGIC ---
 btnEnter.addEventListener('click', () => {
+    // Ignite the Button Lantern
+    btnLantern.classList.add('lit');
+
+    // Play Audio
     audioPiano.volume = 0; 
     audioPiano.play().then(() => {
         gsap.to(audioPiano, { volume: 0.5, duration: 3 });
     }).catch(e => console.log("Audio error:", e));
 
-    gsap.to(startUI, { opacity: 0, duration: 0.5, onComplete: () => {
-        startUI.style.display = 'none';
-        loaderUI.style.display = 'block';
-        gsap.to(loaderUI, { opacity: 1, duration: 0.5 });
-        startFakeLoad();
-    }});
+    // Transition to Loader after short delay (to see ignition)
+    setTimeout(() => {
+        gsap.to(startUI, { opacity: 0, duration: 0.8, onComplete: () => {
+            startUI.style.display = 'none';
+            loaderUI.style.display = 'flex'; // Ensure flex centering
+            loaderUI.style.opacity = 0;
+            gsap.to(loaderUI, { opacity: 1, duration: 1 });
+            startIgnitionSequence();
+        }});
+    }, 1200);
 });
 
-function startFakeLoad() {
-    let loadProgress = 0;
-    const loading = setInterval(() => {
-        loadProgress += Math.random() * 15;
-        if(loadProgress > 100) loadProgress = 100;
-        loaderBar.style.width = `${loadProgress}%`;
-        
-        if(loadProgress === 100) {
-            clearInterval(loading);
-            revealSite();
+// --- 2. LOADING SEQUENCE ---
+function startIgnitionSequence() {
+    let currentLantern = 0;
+    
+    // Light one lantern every 1.2 seconds for slow, premium feel
+    const ignitionInterval = setInterval(() => {
+        if(currentLantern >= loadLanterns.length) {
+            clearInterval(ignitionInterval);
+            setTimeout(revealSite, 1500); // Wait after all lit
+            return;
         }
-    }, 100);
+        
+        loadLanterns[currentLantern].classList.add('lit');
+        currentLantern++;
+        
+    }, 1200); 
 }
 
 function revealSite() {
+    // Light Mouse Lantern
+    const mouseLantern = document.querySelector('#lantern-container .lantern-core');
+    if(mouseLantern) mouseLantern.classList.add('lit');
+    
     const tl = gsap.timeline();
-    tl.to(preloader, { yPercent: -100, duration: 1.5, ease: "power4.inOut", delay: 0.2 })
-      .from(".title-split .char", { y: 100, opacity: 0, rotateX: -90, stagger: 0.05, duration: 1, ease: "back.out(1.5)" }, "-=0.8")
+    // Move preloader up like a curtain
+    tl.to(preloader, { yPercent: -100, duration: 2, ease: "power4.inOut" })
+      .from(".title-split .char", { y: 100, opacity: 0, rotateX: -90, stagger: 0.05, duration: 1, ease: "back.out(1.5)" }, "-=1")
       .from(".subtitle", { opacity: 0, letterSpacing: "1em", duration: 1.5 }, "-=1");
 }
 
-// --- 2. LANTERN PHYSICS (PC SWAY EFFECT) ---
+// --- 2. LANTERN PHYSICS (PC ONLY) ---
 const lantern = document.getElementById('lantern-container');
 const vignette = document.getElementById('vignette-layer');
 
 function updateLantern(x, y) {
     if (isMobile) return;
 
-    // Physics Calculation: Velocity determines Tilt
     state.velX = x - state.lastMouseX;
     state.lastMouseX = x;
 
-    // Clamp tilt to realistic angles (-15 to 15 degrees)
     let targetTilt = gsap.utils.clamp(-15, 15, state.velX * -0.8);
-    state.tilt += (targetTilt - state.tilt) * 0.1; // Smooth interpolation
+    state.tilt += (targetTilt - state.tilt) * 0.1; 
 
-    gsap.to(lantern, { 
-        x: x, 
-        y: y, 
-        rotation: state.tilt, 
-        duration: 0.5, 
-        ease: "power2.out" 
-    });
-
+    gsap.to(lantern, { x: x, y: y, rotation: state.tilt, duration: 0.5, ease: "power2.out" });
     gsap.to(vignette, { x: -x * 0.03, y: -y * 0.03, duration: 1 });
 }
 
-// Track Mouse on PC
 document.addEventListener('mousemove', (e) => {
     if(!isMobile) updateLantern(e.clientX, e.clientY);
 });
 
-// --- 3. EMBER SYSTEM (PC ONLY) ---
+// --- 3. EMBER SYSTEM ---
 const cvs = document.getElementById('ember-canvas');
 const ctx = cvs.getContext('2d');
 let w, h;
 let embers = [];
-// 150 Embers for Extreme PC Detail, 0 for Mobile
 const emberCount = isMobile ? 0 : 150;
 
 const resize = () => { w = cvs.width = window.innerWidth; h = cvs.height = window.innerHeight; };
@@ -120,7 +128,6 @@ class Ember {
     }
 }
 for(let i=0; i<emberCount; i++) embers.push(new Ember());
-
 function animateEmbers() {
     if(emberCount === 0) return;
     ctx.clearRect(0,0,w,h);
@@ -133,9 +140,9 @@ animateEmbers();
 function splitText(selector) {
     document.querySelectorAll(selector).forEach(el => {
         const text = el.innerText;
-        el.innerHTML = text.split(' ').map(word => {
-            return `<span class="word">${word.split('').map(char => `<span class="char">${char}</span>`).join('')}</span>`;
-        }).join(' ');
+        el.innerHTML = text.split(' ').map(word => 
+            `<span class="word">${word.split('').map(char => `<span class="char">${char}</span>`).join('')}</span>`
+        ).join(' ');
     });
 }
 splitText('.title-split');
@@ -145,7 +152,6 @@ splitText('.confession-title');
 document.querySelectorAll('section').forEach(section => {
     const chars = section.querySelectorAll('.char');
     if(chars.length > 0) {
-        // Blur only on PC
         const blurAmount = isMobile ? "0px" : "10px";
         gsap.fromTo(chars, 
             { opacity: 0, filter: `blur(${blurAmount})`, y: 20 },
@@ -160,12 +166,8 @@ document.querySelectorAll('section').forEach(section => {
 // --- 5. MAGNETIC BUTTONS (PC ONLY) ---
 if (!isMobile) {
     document.querySelectorAll('.mag-btn').forEach(btn => {
-        btn.addEventListener('mouseenter', () => {
-           gsap.to(btn, { scale: 1.05, duration: 0.3 });
-        });
-        btn.addEventListener('mouseleave', () => {
-           gsap.to(btn, { scale: 1, x: 0, y: 0, duration: 0.5 });
-        });
+        btn.addEventListener('mouseenter', () => { gsap.to(btn, { scale: 1.05, duration: 0.3 }); });
+        btn.addEventListener('mouseleave', () => { gsap.to(btn, { scale: 1, x: 0, y: 0, duration: 0.5 }); });
         btn.addEventListener('mousemove', (e) => {
             const r = btn.getBoundingClientRect();
             gsap.to(btn, { x: (e.clientX - r.left - r.width/2)*0.4, y: (e.clientY - r.top - r.height/2)*0.4, duration: 0.1 });
@@ -190,12 +192,7 @@ if(!isMobile) {
 }
 
 // --- 7. LENIS SCROLL ---
-const lenis = new Lenis({ 
-    duration: 1.5, 
-    smooth: true,
-    smoothTouch: false 
-});
-
+const lenis = new Lenis({ duration: 1.5, smooth: true, smoothTouch: false });
 function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
 requestAnimationFrame(raf);
 

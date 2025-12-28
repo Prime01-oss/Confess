@@ -5,8 +5,8 @@
     --gold: #d4af37;
     --ember: #ff5500;
     --dark-red: #4a0505;
-    --metal-dark: #1a0f00;
-    --metal-light: #4a2c00;
+    --metal-dark: #0a0500;
+    --metal-light: #331a00;
     --font-display: 'Cinzel', serif;
     --font-body: 'Cormorant Garamond', serif;
     --font-hand: 'Pinyon Script', cursive;
@@ -26,278 +26,212 @@ body {
 }
 
 /* --- 2. FX LAYERS --- */
-#noise-canvas, #ember-canvas {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    pointer-events: none;
-}
+#noise-canvas, #ember-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
 #noise-canvas { z-index: 80; opacity: 0.08; mix-blend-mode: overlay; }
 #ember-canvas { z-index: 81; mix-blend-mode: screen; }
-
-.vignette {
-    position: fixed; top: -10%; left: -10%; width: 120%; height: 120%;
-    background: radial-gradient(circle, transparent 35%, #000 90%);
-    z-index: 90; pointer-events: none;
-    will-change: transform;
-}
+.vignette { position: fixed; top: -10%; left: -10%; width: 120%; height: 120%; background: radial-gradient(circle, transparent 35%, #000 90%); z-index: 90; pointer-events: none; }
 
 /* --- 3. TYPOGRAPHY --- */
-h1, h2, p { margin: 0; overflow-wrap: break-word; hyphens: none; }
-
-h1 {
-    font-family: var(--font-display); 
-    font-size: clamp(3.5rem, 12vw, 9rem); 
-    line-height: 1.1; color: var(--paper);
-    text-shadow: 0 4px 20px rgba(0,0,0,0.8);
-}
-
-.subtitle {
-    font-family: var(--font-display); 
-    font-size: clamp(0.8rem, 2vw, 1.2rem);
-    color: var(--gold); letter-spacing: 0.4em; margin-bottom: 1rem;
-    text-transform: uppercase; opacity: 0.8;
-}
-
-/* --- 4. SECTIONS & TEXT --- */
-section {
-    min-height: 100vh; 
-    display: flex; flex-direction: column;
-    justify-content: center; align-items: center; text-align: center;
-    padding: 2rem; position: relative; z-index: 200;
-}
-
-.text-reveal {
-    font-size: clamp(1.5rem, 4vw, 2.5rem); 
-    font-weight: 300; line-height: 1.6; 
-    max-width: 90%; width: 800px; 
-    margin-bottom: 1rem;
-    position: relative;
-    display: block; 
-    text-shadow: 0 -10px 30px rgba(255, 170, 0, 0.3);
-}
-
+h1 { font-family: var(--font-display); font-size: clamp(3.5rem, 12vw, 9rem); line-height: 1.1; color: var(--paper); text-shadow: 0 4px 20px rgba(0,0,0,0.8); }
+.subtitle { font-family: var(--font-display); font-size: clamp(0.8rem, 2vw, 1.2rem); color: var(--gold); letter-spacing: 0.4em; margin-bottom: 1rem; text-transform: uppercase; opacity: 0.8; }
+.text-reveal { font-size: clamp(1.5rem, 4vw, 2.5rem); font-weight: 300; line-height: 1.6; max-width: 90%; width: 800px; margin-bottom: 1rem; position: relative; display: block; text-shadow: 0 -10px 30px rgba(255, 170, 0, 0.3); }
 .word { display: inline-block; white-space: nowrap; }
 .char { display: inline-block; white-space: pre; opacity: 0; will-change: opacity, transform; }
-
 .gold-text { color: var(--gold); font-style: italic; text-shadow: 0 0 15px rgba(212,175,55,0.5); }
-.handwritten {
-    display: block; margin-top: 40px;
-    font-family: var(--font-hand); 
-    font-size: clamp(1.8em, 5vw, 2.5em); 
-    color: var(--gold); line-height: 1.2;
-}
+.handwritten { display: block; margin-top: 40px; font-family: var(--font-hand); font-size: clamp(1.8em, 5vw, 2.5em); color: var(--gold); line-height: 1.2; }
+.confession-title { font-family: var(--font-display); font-size: clamp(2.5rem, 8vw, 6rem); color: var(--paper); margin-top: 80px; margin-bottom: 20px; position: relative; display: block; text-shadow: 0 -10px 30px rgba(255, 170, 0, 0.3); }
+.confession-sub { font-family: var(--font-hand); font-size: clamp(1.5rem, 4vw, 2rem); color: var(--gold); margin-bottom: 60px; }
 
-/* --- 5. BUTTONS & TITLE --- */
-.confession-title {
-    font-family: var(--font-display);
-    font-size: clamp(2.5rem, 8vw, 6rem);
-    color: var(--paper); 
-    margin-top: 80px; 
-    margin-bottom: 20px;
-    position: relative;
-    display: block;
-    text-shadow: 0 -10px 30px rgba(255, 170, 0, 0.3);
-}
-.confession-sub {
-    font-family: var(--font-hand); 
-    font-size: clamp(1.5rem, 4vw, 2rem); 
-    color: var(--gold); margin-bottom: 60px;
-}
-
+/* --- 4. BUTTONS --- */
 .btn-group { display: flex; gap: 30px; flex-wrap: wrap; justify-content: center; width: 100%; }
-
-.mag-btn {
-    position: relative; padding: 20px 50px; background: none;
-    border: 1px solid rgba(212,175,55,0.3); border-radius: 100px;
-    cursor: pointer; overflow: hidden; transition: border-color 0.3s;
-    min-width: 250px; 
-}
-.btn-txt {
-    position: relative; z-index: 2; font-family: var(--font-display);
-    font-size: 0.9rem; letter-spacing: 0.15em; color: var(--paper);
-    transition: color 0.3s; pointer-events: none; text-transform: uppercase;
-}
-.btn-blind {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background: var(--gold); transform: translateY(100%);
-    transition: transform 0.5s cubic-bezier(0.7, 0, 0.3, 1); z-index: 1;
-}
+.mag-btn { position: relative; padding: 20px 50px; background: none; border: 1px solid rgba(212,175,55,0.3); border-radius: 100px; cursor: pointer; overflow: hidden; transition: border-color 0.3s; min-width: 250px; }
+.btn-txt { position: relative; z-index: 2; font-family: var(--font-display); font-size: 0.9rem; letter-spacing: 0.15em; color: var(--paper); transition: color 0.3s; pointer-events: none; text-transform: uppercase; }
+.btn-blind { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--gold); transform: translateY(100%); transition: transform 0.5s cubic-bezier(0.7, 0, 0.3, 1); z-index: 1; }
 .mag-btn:hover { border-color: var(--gold); }
 .mag-btn:hover .btn-blind { transform: translateY(0%); }
 .mag-btn:hover .btn-txt { color: #000; }
 .secondary { border-color: rgba(255,255,255,0.1); }
 .secondary .btn-txt { color: #888; }
 .secondary:hover .btn-txt { color: var(--paper); }
+section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 2rem; position: relative; z-index: 200; }
 
 
 /* =========================================
    EXTREME LANTERN SYSTEM
    ========================================= */
 
-/* CONTAINER FOR MOUSE LANTERN */
-#lantern-container {
-    position: fixed; top: 0; left: 0; pointer-events: none; z-index: 999;
-    will-change: transform;
-}
-.lantern-spark, .lantern-flares, .lantern-halo { display: none; }
+#lantern-container { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 999; will-change: transform; }
 
-/* 1. DETAILED LANTERN BODY (CSS Drawing) */
-#lantern-container .lantern-core, 
-.text-reveal::before,
+/* 1. SHARED GEOMETRY (The Lantern Shape) */
+.lantern-core, 
+.text-reveal::before, .confession-title::before,
 .hero-inner::before, .hero-inner::after,
-.confession-section::before, .confession-section::after, /* New Floating Lanterns for Conclusion */
-.confession-title::before {
-    content: '';
-    display: block;
+.mini-lantern, .load-lantern {
+    content: ''; display: block;
     width: 45px; height: 65px;
-    
+    /* UNLIT STATE: Dark Glass */
+    background: linear-gradient(135deg, #111 0%, #000 50%, #111 100%);
+    border: 1px solid #332211;
+    border-top: 10px solid var(--metal-dark); 
+    border-bottom: 6px solid var(--metal-dark); 
+    border-radius: 12px 12px 20px 20px;
+    position: relative; z-index: 10;
+    box-shadow: inset 0 0 10px #000;
+    transition: all 0.8s ease-in-out;
+}
+
+/* 2. LIT STATE (Fire & Glow) */
+.lantern-core.lit,
+#lantern-container .lantern-core, 
+.text-reveal::before, 
+.confession-title::before,
+.hero-inner::before, .hero-inner::after,
+.mini-lantern.lit, .load-lantern.lit {
+    /* Fire Gradient */
     background: 
         linear-gradient(90deg, transparent 15%, var(--metal-dark) 15%, var(--metal-dark) 20%, transparent 20%, transparent 80%, var(--metal-dark) 80%, var(--metal-dark) 85%, transparent 85%),
         radial-gradient(circle at 50% 60%, #fff 0%, #ffaa00 20%, #ff5500 50%, #420000 90%);
     
-    border: 1px solid var(--metal-light);
-    border-top: 10px solid var(--metal-dark); 
-    border-bottom: 6px solid var(--metal-dark); 
-    border-radius: 12px 12px 20px 20px;
-    
+    /* Glow */
     box-shadow: 
         inset 0 0 15px rgba(255, 100, 0, 0.8), 
         0 0 30px rgba(255, 80, 0, 0.6),       
         0 20px 60px rgba(255, 60, 0, 0.4);    
-        
-    position: relative;
-    z-index: 10;
+    opacity: 1;
+    animation: lanternFlicker 0.1s infinite alternate;
 }
-#lantern-container .lantern-core { transform: translate(-50%, -10%); }
 
-
-/* 2. VOLUMETRIC LIGHT BEAMS */
-.text-reveal::after, 
-#lantern-container::after,
-.confession-title::after {
-    content: '';
-    position: absolute;
-    top: 55px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 140px; 
-    height: 350px;
+/* 3. LIGHT BEAMS (God Rays) */
+.text-reveal::after, #lantern-container::after, .confession-title::after, .load-lantern::after {
+    content: ''; position: absolute; top: 55px; left: 50%; transform: translateX(-50%); width: 140px; height: 350px;
     background: radial-gradient(ellipse at top, rgba(255, 200, 100, 0.2) 0%, rgba(255, 100, 0, 0.05) 50%, transparent 80%);
-    mix-blend-mode: screen; 
-    filter: blur(10px);
-    pointer-events: none;
-    z-index: -1; 
-    animation: beamPulse 4s infinite alternate;
+    mix-blend-mode: screen; filter: blur(10px); pointer-events: none; z-index: -1; animation: beamPulse 4s infinite alternate;
+    opacity: 0; /* Hidden until lit */
 }
+/* Always visible beams */
+.text-reveal::after, #lantern-container::after, .confession-title::after { opacity: 1; }
 #lantern-container::after { top: 0px; transform: translate(-50%, 0); }
+/* Beams that animate in */
+.load-lantern.lit::after { animation: beamDrop 2s ease-out forwards 0.5s; opacity: 1; }
+
+/* 4. SPARK EFFECT */
+.ignite-flash { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 2px; height: 2px; background: #fff; border-radius: 50%; z-index: 20; opacity: 0; }
+.lit .ignite-flash { animation: sparkAnim 0.6s ease-out forwards; }
 
 
-/* 3. PARAGRAPH LANTERN (STATIC) */
-.text-reveal { margin-top: 80px; } 
-.text-reveal::before {
-    margin: 0 auto 40px auto; 
-    animation: swayIdle 5s ease-in-out infinite alternate;
-}
-
-
-/* 4. HERO SECTION FLOATING LANTERNS */
-.hero-inner { position: relative; }
-.hero-inner::before, .hero-inner::after {
-    position: absolute;
-    width: 60px; height: 85px; 
-}
-.hero-inner::before {
-    top: -100px; left: 5%;
-    animation: floatOrbit1 8s ease-in-out infinite alternate;
-}
-.hero-inner::after {
-    bottom: -80px; right: 5%;
-    animation: floatOrbit2 9s ease-in-out infinite alternate;
-}
-
-
-/* 5. CONCLUSION FLOATING LANTERNS (PC ONLY) */
-/* Hide the static title lantern on PC by default, show the floating section ones */
-.confession-title::before { display: none; } 
-
-.confession-section { position: relative; }
-.confession-section::before, .confession-section::after {
-    position: absolute;
-    width: 60px; height: 85px; 
-}
-.confession-section::before {
-    top: 20%; left: 15%;
-    animation: floatOrbit1 9s ease-in-out infinite alternate;
-}
-.confession-section::after {
-    top: 30%; right: 15%;
-    animation: floatOrbit2 10s ease-in-out infinite alternate;
-}
-
-
-/* --- ANIMATIONS --- */
-@keyframes swayIdle {
-    0% { transform: rotate(-2deg); }
-    100% { transform: rotate(2deg); }
-}
-@keyframes beamPulse {
-    0% { opacity: 0.6; height: 300px; }
-    100% { opacity: 1; height: 380px; }
-}
-@keyframes floatOrbit1 {
-    0% { transform: translate(0, 0) rotate(-5deg); }
-    100% { transform: translate(30px, 40px) rotate(5deg); }
-}
-@keyframes floatOrbit2 {
-    0% { transform: translate(0, 0) rotate(5deg); }
-    100% { transform: translate(-30px, -30px) rotate(-5deg); }
-}
-
-
-/* --- PRELOADER & OUTRO --- */
+/* --- PAGE 1: THE START BUTTON (PREMIUM STYLE) --- */
 #preloader { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; }
-.loader-content { text-align: center; width: 80%; max-width: 300px; }
-.loader-text { color: var(--gold); font-family: var(--font-display); font-size: 0.9rem; letter-spacing: 0.2em; margin-bottom: 15px; text-transform: uppercase; }
-.loader-bar-bg { width: 100%; height: 1px; background: rgba(212,175,55,0.2); }
-.loader-bar-fill { width: 0%; height: 100%; background: var(--gold); }
 
-.start-content { text-align: center; }
-.enter-btn {
-    position: relative; background: transparent;
-    border: 1px solid var(--gold); color: var(--gold);
-    font-family: var(--font-display); font-size: clamp(1rem, 3vw, 1.2rem);
-    letter-spacing: 0.2em; text-transform: uppercase;
-    padding: 20px 50px; cursor: pointer; overflow: hidden;
-    animation: floatBtn 4s ease-in-out infinite;
-    box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
-    transition: all 0.4s ease;
+.start-content {
+    display: flex; justify-content: center; align-items: center; width: 100%; height: 100%;
 }
-.enter-btn:hover { border-color: #fff; color: #fff; box-shadow: 0 0 40px rgba(212, 175, 55, 0.6); }
-@keyframes floatBtn { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
+.enter-btn {
+    /* CRITICAL FIX: Forces transparency to remove white box */
+    background: transparent !important; 
+    border: 1px solid rgba(212, 175, 55, 0.3); /* Subtle Gold Border */
+    outline: none; cursor: pointer; 
+    
+    display: flex; flex-direction: column; align-items: center; 
+    gap: 25px; /* Space between lantern and text */
+    padding: 50px 80px;
+    
+    transition: all 0.5s ease;
+    border-radius: 4px;
+}
+
+.enter-btn:hover {
+    border-color: var(--gold);
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, transparent 70%) !important;
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.1);
+    transform: scale(1.02);
+}
+
+/* Button Lantern Container */
+.btn-lantern-box {
+    width: 50px; height: 75px; 
+    display: flex; justify-content: center; align-items: center;
+    transition: transform 0.5s ease;
+}
+.enter-btn:hover .btn-lantern-box { transform: translateY(-5px); }
+
+/* Button Text */
+.btn-label {
+    font-family: var(--font-display); 
+    font-size: 1.1rem; letter-spacing: 0.3em; 
+    color: #666; /* Unlit Text */
+    text-transform: uppercase; 
+    transition: all 0.5s ease;
+}
+.enter-btn:hover .btn-label { 
+    color: var(--gold); 
+    text-shadow: 0 0 10px var(--gold); 
+    letter-spacing: 0.35em;
+}
+
+
+/* --- PAGE 2: LOADING SCREEN --- */
+.loader-content { text-align: center; display: flex; flex-direction: column; align-items: center; }
+.loader-text { 
+    font-family: var(--font-hand); font-size: 2rem; color: var(--gold); 
+    margin-top: 40px; text-shadow: 0 0 10px rgba(212,175,55,0.3); 
+}
+.loading-lanterns-row { 
+    display: flex; gap: 30px; justify-content: center; align-items: flex-start; 
+    height: 120px; /* Space for beams */
+}
+.load-lantern { 
+    width: 35px; height: 55px; /* Slightly smaller for loader */
+    opacity: 0.3; transform: translateY(0);
+}
+.load-lantern.lit { opacity: 1; transform: translateY(-5px); }
+
+
+/* --- ANIMATIONS & POSITIONS --- */
+#lantern-container .lantern-core { transform: translate(-50%, -10%); }
+.text-reveal { margin-top: 80px; }
+.text-reveal::before, .confession-title::before { margin: 0 auto 40px auto; animation: swayIdle 5s ease-in-out infinite alternate; }
+.hero-inner { position: relative; }
+.hero-inner::before { position: absolute; top: -100px; left: 5%; width: 60px; height: 85px; animation: floatOrbit1 8s ease-in-out infinite alternate; }
+.hero-inner::after { position: absolute; bottom: -80px; right: 5%; width: 60px; height: 85px; animation: floatOrbit2 9s ease-in-out infinite alternate; }
+.confession-title::before { display: none; } /* Hide static on PC */
+.confession-section { position: relative; }
+.confession-section::before, .confession-section::after { position: absolute; width: 60px; height: 85px; content: ''; display: block; background: inherit; /* inherit structure from shared */ }
+/* We need to apply the shared lantern styles to these pseudo elements too */
+.confession-section::before, .confession-section::after {
+    /* Copy of shared style since comma separation got messy above */
+    background: 
+        linear-gradient(90deg, transparent 15%, var(--metal-dark) 15%, var(--metal-dark) 20%, transparent 20%, transparent 80%, var(--metal-dark) 80%, var(--metal-dark) 85%, transparent 85%),
+        radial-gradient(circle at 50% 60%, #fff 0%, #ffaa00 20%, #ff5500 50%, #420000 90%);
+    border: 1px solid var(--metal-light); border-top: 10px solid var(--metal-dark); border-bottom: 6px solid var(--metal-dark); border-radius: 12px 12px 20px 20px;
+    box-shadow: inset 0 0 15px rgba(255, 100, 0, 0.8), 0 0 30px rgba(255, 80, 0, 0.6), 0 20px 60px rgba(255, 60, 0, 0.4);    
+    animation: lanternFlicker 0.1s infinite alternate;
+}
+.confession-section::before { top: 20%; left: 15%; animation: floatOrbit1 9s ease-in-out infinite alternate; }
+.confession-section::after { top: 30%; right: 15%; animation: floatOrbit2 10s ease-in-out infinite alternate; }
+
+@keyframes swayIdle { 0% { transform: rotate(-2deg); } 100% { transform: rotate(2deg); } }
+@keyframes beamPulse { 0% { opacity: 0.6; height: 300px; } 100% { opacity: 1; height: 380px; } }
+@keyframes floatOrbit1 { 0% { transform: translate(0, 0) rotate(-5deg); } 100% { transform: translate(30px, 40px) rotate(5deg); } }
+@keyframes floatOrbit2 { 0% { transform: translate(0, 0) rotate(5deg); } 100% { transform: translate(-30px, -30px) rotate(-5deg); } }
+@keyframes sparkAnim { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 20% { opacity: 1; transform: translate(-50%, -50%) scale(15); background: #fff; } 100% { opacity: 0; transform: translate(-50%, -50%) scale(0); } }
+@keyframes beamDrop { 0% { height: 0px; opacity: 0; } 100% { height: 250px; opacity: 1; } }
+@keyframes lanternFlicker { 0% { opacity: 0.95; } 100% { opacity: 1; } }
+
+/* --- OUTRO --- */
 #outro { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; }
 .outro-text { font-family: var(--font-hand); font-size: clamp(2rem, 8vw, 4rem); color: var(--gold); text-align: center; padding: 20px; }
 .spacer { height: 20vh; }
 
-
 /* --- MOBILE OPTIMIZATIONS --- */
 @media (max-width: 768px) {
-    /* Hide PC elements */
     #lantern-container, #noise-canvas { display: none !important; }
-    
-    /* HIDE Floating Section Lanterns on Mobile */
     .confession-section::before, .confession-section::after { display: none !important; }
-    
-    /* RESTORE Static Title Lantern on Mobile */
     .confession-title::before { display: block; margin: 0 auto 40px auto; animation: swayIdle 5s ease-in-out infinite alternate; }
-
     .vignette { background: radial-gradient(circle, transparent 40%, #000 85%); opacity: 0.7; }
-    
     .hero-inner::before, .hero-inner::after { width: 45px; height: 60px; }
-    
     .btn-group { flex-direction: column; align-items: center; gap: 20px; }
     .mag-btn { width: 100%; max-width: 300px; }
-    section { min-height: 100svh; }
-    
     #ember-canvas, .text-reveal::after, .confession-title::after { mix-blend-mode: normal !important; opacity: 0.5; }
     .mag-btn, .enter-btn { box-shadow: none !important; }
 }
