@@ -18,11 +18,13 @@ const btnEnter = document.getElementById('btn-enter');
 const audioPiano = document.getElementById('bgm-piano');
 
 btnEnter.addEventListener('click', () => {
+    // Attempt audio play
     audioPiano.volume = 0; 
     audioPiano.play().then(() => {
         gsap.to(audioPiano, { volume: 0.5, duration: 3 });
     }).catch(e => console.log("Audio error:", e));
 
+    // Transition
     gsap.to(startUI, { opacity: 0, duration: 0.5, onComplete: () => {
         startUI.style.display = 'none';
         loaderUI.style.display = 'block';
@@ -57,20 +59,20 @@ const lantern = document.getElementById('lantern-container');
 const lanternHalo = document.querySelector('.lantern-halo');
 const vignette = document.getElementById('vignette-layer');
 
-// NEW: Fairy Dust Effect for Touch
+// NEW: Optimized Sparkle Spawner
 function createSparkle(x, y) {
-    if(Math.random() > 0.3) return; // Don't spawn too many
     const sparkle = document.createElement('div');
     sparkle.classList.add('fairy-dust');
     document.body.appendChild(sparkle);
     
-    const size = Math.random() * 3 + 1;
+    // Randomize slightly
+    const size = Math.random() * 3 + 2; // slightly bigger for visibility
     sparkle.style.width = `${size}px`;
     sparkle.style.height = `${size}px`;
     sparkle.style.left = `${x}px`;
     sparkle.style.top = `${y}px`;
     
-    // Remove after animation
+    // Auto-remove to keep DOM light
     setTimeout(() => { sparkle.remove(); }, 1000);
 }
 
@@ -82,9 +84,12 @@ function updateLantern(x, y) {
     state.mouseX = x;
     state.mouseY = y;
 
-    gsap.to(lantern, { x: x, y: y, duration: 0.6, ease: "power3.out" });
-    // Logic: Subtler vignette movement on mobile
-    const vigMove = isMobile ? 0.015 : 0.03;
+    // Use shorter duration on mobile for snappier feel
+    const duration = isMobile ? 0.3 : 0.6;
+    gsap.to(lantern, { x: x, y: y, duration: duration, ease: "power3.out" });
+
+    // Very subtle vignette movement on mobile to save GPU
+    const vigMove = isMobile ? 0.005 : 0.03;
     gsap.to(vignette, { x: -x * vigMove, y: -y * vigMove, duration: 1 });
 }
 
@@ -93,14 +98,18 @@ document.addEventListener('mousemove', (e) => {
     updateLantern(e.clientX, e.clientY);
 });
 
-// Mobile: Touch Follow with Offset + Sparkles
+// Mobile: Touch Follow with THROTTLING
+let touchFrame = 0;
 document.addEventListener('touchmove', (e) => {
     const touch = e.touches[0];
-    const targetY = touch.clientY - 60; // Offset for visibility
+    const targetY = touch.clientY - 60; // Offset
     updateLantern(touch.clientX, targetY);
     
-    // Pretty Effect: Spawn dust at the lantern core location
-    createSparkle(touch.clientX, targetY);
+    // PERFORMANCE LOGIC: Only spawn sparkle every 5th frame
+    touchFrame++;
+    if(touchFrame % 5 === 0) {
+        createSparkle(touch.clientX, targetY);
+    }
 }, { passive: true });
 
 document.addEventListener('touchstart', (e) => {
@@ -109,13 +118,13 @@ document.addEventListener('touchstart', (e) => {
 }, { passive: true });
 
 
-// --- 3. EMBER SYSTEM (OPTIMIZED) ---
+// --- 3. EMBER SYSTEM (HIGHLY OPTIMIZED) ---
 const cvs = document.getElementById('ember-canvas');
 const ctx = cvs.getContext('2d');
 let w, h;
 let embers = [];
-// Logic: Reduce count on mobile for optimization
-const emberCount = isMobile ? 50 : 120;
+// Logic: Drastically reduce count on mobile for FPS
+const emberCount = isMobile ? 30 : 120;
 
 const resize = () => { w = cvs.width = window.innerWidth; h = cvs.height = window.innerHeight; };
 window.addEventListener('resize', resize);
@@ -133,7 +142,8 @@ class Ember {
         this.maxLife = this.life;
     }
     update() {
-        this.y -= this.speedY + (state.mouseVel * 0.005);
+        // Simplified update logic
+        this.y -= this.speedY; 
         this.x += Math.sin(this.y * 0.01) * 0.5;
         this.life--;
         if (this.life <= 0 || this.y < -10) this.reset();
@@ -169,8 +179,11 @@ splitText('.confession-title');
 document.querySelectorAll('section').forEach(section => {
     const chars = section.querySelectorAll('.char');
     if(chars.length > 0) {
+        // OPTIMIZATION: Disable blur on mobile (Huge performance gain)
+        const blurAmount = isMobile ? "0px" : "10px";
+        
         gsap.fromTo(chars, 
-            { opacity: 0, filter: "blur(10px)", y: 20 },
+            { opacity: 0, filter: `blur(${blurAmount})`, y: 20 },
             {
                 scrollTrigger: { trigger: section, start: "top 75%", end: "bottom 85%", scrub: 1 },
                 opacity: 1, filter: "blur(0px)", y: 0, stagger: 0.05
@@ -179,17 +192,14 @@ document.querySelectorAll('section').forEach(section => {
     }
 });
 
-// --- 5. MAGNETIC BUTTONS (RESPONSIVE HALO) ---
+// --- 5. MAGNETIC BUTTONS ---
 document.querySelectorAll('.mag-btn').forEach(btn => {
     btn.addEventListener('mouseenter', () => {
-        // Logic: Smaller expansion on mobile
         const size = isMobile ? 250 : 350;
         gsap.to(lanternHalo, { width: size, height: size, background: "radial-gradient(circle, rgba(255,220,150,0.25) 0%, transparent 70%)", duration: 0.4 });
     });
     btn.addEventListener('mouseleave', () => {
-        // Logic: Return to default size based on screen
-        const defSize = isMobile ? 200 : 600; // rough check, CSS handles clamp though
-        // We actually just remove inline styles to let CSS take over, or animate to a safe value
+        // Reset to responsive size
         gsap.to(lanternHalo, { width: isMobile ? "40vw" : "50vw", height: isMobile ? "40vw" : "50vw", background: "radial-gradient(circle, rgba(255,150,50,0.12) 0%, transparent 70%)", duration: 0.4 });
         gsap.to(btn, { x: 0, y: 0, duration: 0.5 });
     });
@@ -199,7 +209,7 @@ document.querySelectorAll('.mag-btn').forEach(btn => {
     });
 });
 
-// --- 6. FILM GRAIN ---
+// --- 6. FILM GRAIN (DISABLED ON MOBILE) ---
 const nCvs = document.getElementById('noise-canvas');
 const nCtx = nCvs.getContext('2d');
 function noise() {
@@ -211,7 +221,10 @@ function noise() {
     nCtx.putImageData(idata, 0, 0);
     requestAnimationFrame(noise);
 }
-noise();
+// Optimization: Do not run noise loop on mobile
+if(!isMobile) {
+    noise();
+}
 
 // --- 7. LENIS SCROLL ---
 const lenis = new Lenis({ 
