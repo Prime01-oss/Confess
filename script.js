@@ -1,5 +1,8 @@
 gsap.registerPlugin(ScrollTrigger);
 
+// --- LOGIC: DETECT DEVICE FOR OPTIMIZATION ---
+const isMobile = window.innerWidth < 768;
+
 const state = {
     mouseX: window.innerWidth / 2,
     mouseY: window.innerHeight / 2,
@@ -15,13 +18,11 @@ const btnEnter = document.getElementById('btn-enter');
 const audioPiano = document.getElementById('bgm-piano');
 
 btnEnter.addEventListener('click', () => {
-    // 1. Play Piano Immediately
     audioPiano.volume = 0; 
     audioPiano.play().then(() => {
         gsap.to(audioPiano, { volume: 0.5, duration: 3 });
     }).catch(e => console.log("Audio error:", e));
 
-    // 2. Transition to Loading
     gsap.to(startUI, { opacity: 0, duration: 0.5, onComplete: () => {
         startUI.style.display = 'none';
         loaderUI.style.display = 'block';
@@ -51,10 +52,27 @@ function revealSite() {
       .from(".subtitle", { opacity: 0, letterSpacing: "1em", duration: 1.5 }, "-=1");
 }
 
-// --- 2. LANTERN PHYSICS (MOUSE + TOUCH) ---
+// --- 2. LANTERN PHYSICS & FAIRY DUST ---
 const lantern = document.getElementById('lantern-container');
 const lanternHalo = document.querySelector('.lantern-halo');
 const vignette = document.getElementById('vignette-layer');
+
+// NEW: Fairy Dust Effect for Touch
+function createSparkle(x, y) {
+    if(Math.random() > 0.3) return; // Don't spawn too many
+    const sparkle = document.createElement('div');
+    sparkle.classList.add('fairy-dust');
+    document.body.appendChild(sparkle);
+    
+    const size = Math.random() * 3 + 1;
+    sparkle.style.width = `${size}px`;
+    sparkle.style.height = `${size}px`;
+    sparkle.style.left = `${x}px`;
+    sparkle.style.top = `${y}px`;
+    
+    // Remove after animation
+    setTimeout(() => { sparkle.remove(); }, 1000);
+}
 
 function updateLantern(x, y) {
     const dx = x - state.mouseX;
@@ -65,24 +83,40 @@ function updateLantern(x, y) {
     state.mouseY = y;
 
     gsap.to(lantern, { x: x, y: y, duration: 0.6, ease: "power3.out" });
-    gsap.to(vignette, { x: -x * 0.03, y: -y * 0.03, duration: 1 });
+    // Logic: Subtler vignette movement on mobile
+    const vigMove = isMobile ? 0.015 : 0.03;
+    gsap.to(vignette, { x: -x * vigMove, y: -y * vigMove, duration: 1 });
 }
 
+// PC: Mouse Follow
 document.addEventListener('mousemove', (e) => {
     updateLantern(e.clientX, e.clientY);
 });
 
+// Mobile: Touch Follow with Offset + Sparkles
 document.addEventListener('touchmove', (e) => {
     const touch = e.touches[0];
-    updateLantern(touch.clientX, touch.clientY);
+    const targetY = touch.clientY - 60; // Offset for visibility
+    updateLantern(touch.clientX, targetY);
+    
+    // Pretty Effect: Spawn dust at the lantern core location
+    createSparkle(touch.clientX, targetY);
+}, { passive: true });
+
+document.addEventListener('touchstart', (e) => {
+    const touch = e.touches[0];
+    updateLantern(touch.clientX, touch.clientY - 60);
 }, { passive: true });
 
 
-// --- 3. EMBER SYSTEM ---
+// --- 3. EMBER SYSTEM (OPTIMIZED) ---
 const cvs = document.getElementById('ember-canvas');
 const ctx = cvs.getContext('2d');
 let w, h;
 let embers = [];
+// Logic: Reduce count on mobile for optimization
+const emberCount = isMobile ? 50 : 120;
+
 const resize = () => { w = cvs.width = window.innerWidth; h = cvs.height = window.innerHeight; };
 window.addEventListener('resize', resize);
 resize();
@@ -110,7 +144,8 @@ class Ember {
         ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill();
     }
 }
-for(let i=0; i<120; i++) embers.push(new Ember());
+for(let i=0; i<emberCount; i++) embers.push(new Ember());
+
 function animateEmbers() {
     ctx.clearRect(0,0,w,h);
     embers.forEach(e => { e.update(); e.draw(); });
@@ -122,9 +157,9 @@ animateEmbers();
 function splitText(selector) {
     document.querySelectorAll(selector).forEach(el => {
         const text = el.innerText;
-        el.innerHTML = text.split('').map(char => 
-            char === ' ' ? ' ' : `<span class="char">${char}</span>`
-        ).join('');
+        el.innerHTML = text.split(' ').map(word => {
+            return `<span class="word">${word.split('').map(char => `<span class="char">${char}</span>`).join('')}</span>`;
+        }).join(' ');
     });
 }
 splitText('.title-split');
@@ -144,13 +179,18 @@ document.querySelectorAll('section').forEach(section => {
     }
 });
 
-// --- 5. MAGNETIC BUTTONS ---
+// --- 5. MAGNETIC BUTTONS (RESPONSIVE HALO) ---
 document.querySelectorAll('.mag-btn').forEach(btn => {
     btn.addEventListener('mouseenter', () => {
-        gsap.to(lanternHalo, { width: 350, height: 350, background: "radial-gradient(circle, rgba(255,220,150,0.25) 0%, transparent 70%)", duration: 0.4 });
+        // Logic: Smaller expansion on mobile
+        const size = isMobile ? 250 : 350;
+        gsap.to(lanternHalo, { width: size, height: size, background: "radial-gradient(circle, rgba(255,220,150,0.25) 0%, transparent 70%)", duration: 0.4 });
     });
     btn.addEventListener('mouseleave', () => {
-        gsap.to(lanternHalo, { width: 600, height: 600, background: "radial-gradient(circle, rgba(255,150,50,0.12) 0%, transparent 70%)", duration: 0.4 });
+        // Logic: Return to default size based on screen
+        const defSize = isMobile ? 200 : 600; // rough check, CSS handles clamp though
+        // We actually just remove inline styles to let CSS take over, or animate to a safe value
+        gsap.to(lanternHalo, { width: isMobile ? "40vw" : "50vw", height: isMobile ? "40vw" : "50vw", background: "radial-gradient(circle, rgba(255,150,50,0.12) 0%, transparent 70%)", duration: 0.4 });
         gsap.to(btn, { x: 0, y: 0, duration: 0.5 });
     });
     btn.addEventListener('mousemove', (e) => {
@@ -174,7 +214,12 @@ function noise() {
 noise();
 
 // --- 7. LENIS SCROLL ---
-const lenis = new Lenis({ duration: 1.5, smooth: true });
+const lenis = new Lenis({ 
+    duration: 1.5, 
+    smooth: true,
+    smoothTouch: false 
+});
+
 function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
 requestAnimationFrame(raf);
 
